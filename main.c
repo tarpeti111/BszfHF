@@ -15,13 +15,25 @@
 #define V 0x2230
 #define R 0x0c73
 
-volatile uint8_t scrollIndex;
+volatile uint8_t animationFrame;
 
 // TIMER0 interrupt handler
 void TIMER0_IRQHandler(void) {
   TIMER_IntClear(TIMER0, TIMER_IF_OF); // Clear overflow interrupt flag
-  scrollIndex++;
-  scrollIndex %= 11;
+  animationFrame++;
+  animationFrame %= 11;
+}
+
+// Scroll Animation
+void animate(SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments, char *frames){
+  lowerCharSegments[0].raw = frames[(animationFrame + 0) % 11];
+  lowerCharSegments[1].raw = frames[(animationFrame + 1) % 11];
+  lowerCharSegments[2].raw = frames[(animationFrame + 2) % 11];
+  lowerCharSegments[3].raw = frames[(animationFrame + 3) % 11];
+  lowerCharSegments[4].raw = frames[(animationFrame + 4) % 11];
+  lowerCharSegments[5].raw = frames[(animationFrame + 5) % 11];
+  lowerCharSegments[6].raw = frames[(animationFrame + 6) % 11];
+  // only increment asd every 0.5 seconds or so, dont use a delay, use a peripheral timer
 }
 
 void USART_TxString(USART_TypeDef *usart, char *data, uint8_t lenght){
@@ -56,8 +68,6 @@ int main(void)
   NVIC_EnableIRQ(TIMER0_IRQn);
   TIMER_Enable(TIMER0, true);
   // ------------------------------------------------
-
-  const uint16_t text[] = {G,A,M,E,0,O,V,E,R,0,0};
   uint8_t cursorPosition = 0;
   bool b_gameover = false;
 
@@ -101,14 +111,7 @@ int main(void)
         lowerCharSegments[cursorPosition].d = 1;
     }
     if(b_gameover){
-      lowerCharSegments[0].raw = text[(scrollIndex + 0) % 11];
-      lowerCharSegments[1].raw = text[(scrollIndex + 1) % 11];
-      lowerCharSegments[2].raw = text[(scrollIndex + 2) % 11];
-      lowerCharSegments[3].raw = text[(scrollIndex + 3) % 11];
-      lowerCharSegments[4].raw = text[(scrollIndex + 4) % 11];
-      lowerCharSegments[5].raw = text[(scrollIndex + 5) % 11];
-      lowerCharSegments[6].raw = text[(scrollIndex + 6) % 11];
-      // only increment asd every 0.5 seconds or so, dont use a delay, use a peripheral timer
+
     }
     //SegmentLCD_Number(cursorPosition);
     SegmentLCD_LowerSegments(lowerCharSegments);
