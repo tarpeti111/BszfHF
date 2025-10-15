@@ -56,7 +56,7 @@ int main(void)
   uint16_t gameOverFrames[] = {G,A,M,E,0,O,V,E,R,0,0};
   uint8_t cursorPosition = 0;
   bool b_gameover = false;
-  uint8_t timeScale = 10;
+  uint8_t timeScale = 100;
   int bananas[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
   for(uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++){
       bananas[i] = -1;
@@ -86,7 +86,7 @@ int main(void)
   TIMER_TopSet(TIMER0, 13672);
   TIMER_IntEnable(TIMER0, TIMER_IF_OF);
   NVIC_EnableIRQ(TIMER0_IRQn);
-  //TIMER_Enable(TIMER0, true);
+  TIMER_Enable(TIMER0, true);
   // ------------------------------------------------
 
   // ANIMATION TIMER
@@ -97,7 +97,7 @@ int main(void)
   TIMER_TopSet(TIMER1, 13672);
   TIMER_IntEnable(TIMER1, TIMER_IF_OF);
   NVIC_EnableIRQ(TIMER1_IRQn);
-  TIMER_Enable(TIMER1, true);
+  TIMER_Enable(TIMER1, false);
   // ------------------------------------------------
   while(1){
       // CLEAR LOWER SEGMENTS
@@ -121,19 +121,21 @@ int main(void)
               cursorPosition += 6;
             break;
           case '+':
-            timeScale++;
+            timeScale+=5;
             break;
           case '-':
-            timeScale--;
+            timeScale-=5;
             break;
           case 'r':
             b_gameover = !b_gameover;
+            TIMER_Enable(TIMER1, b_gameover);
             for(int i  = 0; i < 50; i++){
                 USART_Tx(UART0, '\n');
             }
             for(int j = 0; j < SEGMENT_LCD_NUM_OF_LOWER_CHARS; j++){
                 bananas[j] = -1;
             }
+            cursorPosition = 0;
             USART_Tx(UART0, '\r');
             break;
           default:
@@ -144,9 +146,9 @@ int main(void)
             if(timeScale < 1){
                 timeScale = 1;
             }
-            TIMER_TopSet(TIMER0, 1367*timeScale);
+            TIMER_TopSet(TIMER0, 136.72*timeScale);
 
-            if(TIMER_CounterGet(TIMER0) >= 1367*timeScale){
+            if(TIMER_CounterGet(TIMER0) >= 136.72*timeScale){
               TIMER_CounterSet(TIMER0, 0);
             }
         }
@@ -183,6 +185,7 @@ int main(void)
                   }
                   else{
                       b_gameover = true;
+                      TIMER_Enable(TIMER1, true);
                       for(int j = 0; j < SEGMENT_LCD_NUM_OF_LOWER_CHARS; j++){
                           bananas[j] = -1;
                       }
