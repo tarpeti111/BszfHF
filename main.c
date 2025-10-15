@@ -15,14 +15,16 @@
 #define V 0x2230
 #define R 0x0c73
 
-volatile uint16_t gameTicks;
-volatile uint8_t animationFrame;
+volatile uint8_t gameTicks = 0;
+volatile uint8_t animationFrame = 0;
+volatile bool b_gameTick = false;
 
 // TIMER0 interrupt handler
 void TIMER0_IRQHandler(void) {
   TIMER_IntClear(TIMER0, TIMER_IF_OF); // Clear overflow interrupt flag
-  //animationFrame++;
-  //animationFrame %= 11;
+  gameTicks++;
+  gameTicks %= 256;
+  b_gameTick = true;
 }
 void TIMER1_IRQHandler(void) {
   TIMER_IntClear(TIMER1, TIMER_IF_OF); // Clear overflow interrupt flag
@@ -32,13 +34,9 @@ void TIMER1_IRQHandler(void) {
 
 // Scroll Animation
 void animate(SegmentLCD_LowerCharSegments_TypeDef *lowerCharSegments, uint16_t *frames, uint8_t maxFrames){
-  lowerCharSegments[0].raw = frames[(animationFrame + 0) % maxFrames];
-  lowerCharSegments[1].raw = frames[(animationFrame + 1) % maxFrames];
-  lowerCharSegments[2].raw = frames[(animationFrame + 2) % maxFrames];
-  lowerCharSegments[3].raw = frames[(animationFrame + 3) % maxFrames];
-  lowerCharSegments[4].raw = frames[(animationFrame + 4) % maxFrames];
-  lowerCharSegments[5].raw = frames[(animationFrame + 5) % maxFrames];
-  lowerCharSegments[6].raw = frames[(animationFrame + 6) % maxFrames];
+  for(int i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++){
+      lowerCharSegments[i].raw = frames[(animationFrame + i) % maxFrames];
+  }
 }
 
 void USART_TxString(USART_TypeDef *usart, char *data, uint8_t lenght){
@@ -47,12 +45,22 @@ void USART_TxString(USART_TypeDef *usart, char *data, uint8_t lenght){
   }
 }
 
+// TODO: MAKE THIS
+uint8_t getrand(uint8_t begin, uint8_t end){
+  return 0;
+}
+
 int main(void)
 {
+  uint16_t points = 0;
   uint16_t gameOverFrames[] = {G,A,M,E,0,O,V,E,R,0,0};
   uint8_t cursorPosition = 0;
   bool b_gameover = false;
-  volatile uint8_t timeScale = 10;
+  uint8_t timeScale = 10;
+  int bananas[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
+  for(uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++){
+      bananas[i] = -1;
+  }
 
   CMU_ClockEnable(cmuClock_GPIO,true);
   CMU_ClockEnable(cmuClock_UART0,true);
@@ -70,12 +78,12 @@ int main(void)
   SegmentLCD_Init(false);
   SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
 
-  // GAME TICK TIMER
+  // GAME TIMER
   // ---------------- TIMER0 SETUP ----------------
   TIMER_Init_TypeDef timer0Init = TIMER_INIT_DEFAULT;
   timer0Init.prescale = timerPrescale1024;
   TIMER_Init(TIMER0, &timer0Init);
-  TIMER_TopSet(TIMER0, 6836);
+  TIMER_TopSet(TIMER0, 13672);
   TIMER_IntEnable(TIMER0, TIMER_IF_OF);
   NVIC_EnableIRQ(TIMER0_IRQn);
   //TIMER_Enable(TIMER0, true);
@@ -98,9 +106,7 @@ int main(void)
               lowerCharSegments[p].raw = 1 << s;
           }
       }
-
       if(UART0->STATUS & USART_STATUS_RXDATAV){
-
         char recieved = USART_Rx(UART0);
         //debug input -> output
         USART_Tx(UART0,recieved);
@@ -112,7 +118,7 @@ int main(void)
             break;
           case 'a':
             if(!b_gameover)
-              cursorPosition++;
+              cursorPosition += 6;
             break;
           case '+':
             timeScale++;
@@ -125,30 +131,78 @@ int main(void)
             for(int i  = 0; i < 50; i++){
                 USART_Tx(UART0, '\n');
             }
+            for(int j = 0; j < SEGMENT_LCD_NUM_OF_LOWER_CHARS; j++){
+                bananas[j] = -1;
+            }
             USART_Tx(UART0, '\r');
             break;
           default:
             break;
         }
-        cursorPosition %= 6;
+        cursorPosition %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
         if(timeScale != lastTimeScale){
             if(timeScale < 1){
                 timeScale = 1;
             }
-            TIMER_TopSet(TIMER1, 1367*timeScale);
+            TIMER_TopSet(TIMER0, 1367*timeScale);
 
-            if(TIMER_CounterGet(TIMER1) >= 1367*timeScale){
+            if(TIMER_CounterGet(TIMER0) >= 1367*timeScale){
               TIMER_CounterSet(TIMER0, 0);
             }
         }
     }
     if(!b_gameover){
         lowerCharSegments[cursorPosition].d = 1;
+
+        for(int i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++){
+          switch (bananas[i]){
+            case 0:
+              lowerCharSegments[i].a = 1;
+              break;
+            case 1:
+              lowerCharSegments[i].j = 1;
+              break;
+            case 2:
+              lowerCharSegments[i].p = 1;
+              break;
+            default:
+              break;
+          }
+        }
+
+        if(b_gameTick){
+            b_gameTick = false;
+            for(int i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++){
+                if(bananas[i] >= 0 && bananas[i] < 3){
+                    bananas[i]++;
+                }
+                if(bananas[i] == 3){
+                  if(cursorPosition == i){
+                      bananas[i] = -1;
+                      points++;
+                  }
+                  else{
+                      b_gameover = true;
+                      for(int j = 0; j < SEGMENT_LCD_NUM_OF_LOWER_CHARS; j++){
+                          bananas[j] = -1;
+                      }
+                  }
+                }
+            }
+            if(gameTicks % 4 == 0){
+                uint8_t newBananaLocation = getrand(0,6);
+                while(bananas[newBananaLocation] != -1){
+                  newBananaLocation++;
+                  newBananaLocation %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
+                }
+                bananas[newBananaLocation] = 0;
+            }
+        }
     }
     if(b_gameover){
         animate(lowerCharSegments, gameOverFrames, 11);
     }
-    //SegmentLCD_Number(cursorPosition);
+    SegmentLCD_Number(points);
     SegmentLCD_LowerSegments(lowerCharSegments);
  }
 }
