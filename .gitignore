@@ -1,3 +1,26 @@
-*
-!main.c
-!.gitignore
+# Exclude compiled object files and executables.
+*.o
+*.out
+*.exe
+*.elf
+
+# Exclude linker map files and other build outputs
+*.map
+*.a
+*.lib
+*.dll
+
+/GNU ARM v12.2.1 - Debug/
+.project
+.cproject
+.pdm/
+.settings/
+
+*.slcp
+*.pintool
+*.slps
+.projectlinkstore
+
+/gecko_sdk_4.5.0/
+/autogen/
+/config/
