@@ -12,23 +12,24 @@
 #include "string.h"
 #include "rand_gen.h"
 
-#define FALLING_SPEED_MAX 99
-#define FALLING_SPEED_MIN 01
-#define RANDOM_MAXIMUM SEGMENT_LCD_NUM_OF_LOWER_CHARS
-#define GAME_END_COUNT 25
+#define FALLING_SPEED_MAX 99 /**< Maximum allowed falling speed */
+#define FALLING_SPEED_MIN 1  /**< Minimum allowed falling speed */
+#define RANDOM_MAXIMUM SEGMENT_LCD_NUM_OF_LOWER_CHARS /**< Maximum random position for fruit spawn */
+#define GAME_END_COUNT 25 /**< Total number of fruits before game ends */
 
+/**
+ * @brief Structure representing the game state.
+ */
 typedef struct {
-    //game variables
-    volatile uint8_t player_pos;
-    volatile uint8_t falling_speed;
-    volatile bool started;
+    volatile uint8_t player_pos;   /**< Player's current position */
+    volatile uint8_t falling_speed;/**< Current falling speed of fruits */
+    volatile bool started;         /**< True if the game has started */
 
-    //game score variables
-    uint8_t missed;
-    uint8_t caught;
+    uint8_t missed;                /**< Number of fruits missed */
+    uint8_t caught;                /**< Number of fruits caught */
 } GameState;
 
-static GameState game;
+static GameState game; /**< Static instance of the game state */
 
 void game_init(void){
   display_init();
@@ -55,7 +56,6 @@ void game_over(void){
   display_clear();
   display_updateScore(game.missed, game.caught);
 }
-
 
 void game_spawnFruit(void){
   if(game.started){
@@ -93,7 +93,9 @@ void game_action(void){
     }
 
     // 3. now render fruits and score AFTER logic is done
-    display_toggleFruits(fruit_array, true);
+    if(game.started){
+        display_toggleFruits(fruit_array, true);
+    }
     display_updateScore(game.missed, game.caught);
 }
 

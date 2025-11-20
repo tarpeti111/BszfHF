@@ -10,7 +10,7 @@
 #include "em_adc.h"
 #include "em_cmu.h"
 
-bool initialized = false;
+bool initialized = false; /**< Flag indicating if the random generator has been initialized */
 
 void adc_init(void) {
   CMU_ClockEnable(cmuClock_ADC0, true);
@@ -26,6 +26,13 @@ void adc_init(void) {
   ADC_InitSingle(ADC0, &sinit);
 }
 
+/**
+ * @brief Generates a 32-bit seed from ADC noise.
+ *
+ * Reads 32 single-bit values from the ADC and assembles them into a 32-bit integer.
+ *
+ * @return 32-bit random seed
+ */
 uint32_t seed_from_adc_noise(void) {
   uint32_t s = 0;
   for (int i = 0; i < 32; i++) {
@@ -37,6 +44,12 @@ uint32_t seed_from_adc_noise(void) {
   return s;
 }
 
+/**
+ * @brief Initializes the random number generator.
+ *
+ * Seeds the standard library `rand()` function using ADC noise.
+ * Sets the `initialized` flag to true.
+ */
 void rand_gen_init(){
   adc_init();
   srand(seed_from_adc_noise());

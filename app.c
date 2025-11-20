@@ -21,11 +21,18 @@
 #include "em_cmu.h"
 #include "horizontalSegment.h"
 
-volatile uint32_t msTicks = 0;
+#define GAME_SPAWN_TIME_MS 3001  /**< Time interval between spawning fruits (ms) */
+#define GAME_TICK_TIME_MS 1000   /**< Base game logic tick interval (ms) */
 
-volatile uint32_t timerGameAction;
-volatile uint32_t timerSpawn;
+volatile uint32_t msTicks = 0;          /**< System millisecond counter */
+volatile uint32_t timerGameAction;      /**< Countdown timer for game logic ticks */
+volatile uint32_t timerSpawn;           /**< Countdown timer for spawning fruits */
 
+/**
+ * @brief SysTick interrupt handler.
+ *
+ * Increments the millisecond counter and decrements game timers.
+ */
 void SysTick_Handler(void){
     msTicks++;
 
@@ -36,7 +43,6 @@ void SysTick_Handler(void){
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
-
 void app_init(void)
 {
   // Enable clock for GPIO
@@ -45,8 +51,8 @@ void app_init(void)
   game_init();
   horizontalSegment_uartInit();
 
-  timerGameAction = 1000;
-  timerSpawn = 3001;
+  timerGameAction = GAME_TICK_TIME_MS;
+  timerSpawn = GAME_SPAWN_TIME_MS;
 
   /* Setup SysTick Timer for 1 millisecond interrupts  */
   if (SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE)/1000)) {
@@ -62,10 +68,10 @@ void app_process_action(void)
 {
   if(timerGameAction == 0){
       game_action();
-      timerGameAction = 1000 / game_getFallingSpeed();
+      timerGameAction = GAME_TICK_TIME_MS / game_getFallingSpeed();
   }
   if(timerSpawn == 0){
       game_spawnFruit();
-      timerSpawn = 3001;
+      timerSpawn = GAME_SPAWN_TIME_MS;
   }
 }

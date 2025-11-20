@@ -8,7 +8,8 @@
 #include "segmentlcd_individual.h"
 #include "fruit.h"
 
-Fruit fruit_array[NUM_OF_FRUITS];
+/** @brief Array holding all fruits in the game. */
+static Fruit fruit_array[NUM_OF_FRUITS];
 
 Fruit* fruit_getFruits(void){
   return fruit_array;
@@ -41,13 +42,6 @@ bool fruit_removeFruit(uint8_t idx){
   fruit_array[idx].state = OFFLINE;
   fruit_array[idx].pos = 255;
   return true;
-}
-
-void fruit_copyArray(Fruit* from, Fruit* to){
-  for(uint8_t i = 0; NUM_OF_FRUITS > i; i++){
-      to[i].pos = from[i].pos;
-      to[i].state = from[i].state;
-  }
 }
 
 void fruit_incrementOne(uint8_t idx){

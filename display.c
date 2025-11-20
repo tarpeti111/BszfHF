@@ -10,6 +10,7 @@
 #include "segmentlcdconfig.h"
 #include "segmentlcd.h"
 
+/** @brief Array representing the state of each lower LCD character. */
 SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
 
 void display_init(void){
@@ -33,13 +34,13 @@ void display_togglePlayerPostition(uint8_t player_pos, bool on){
 
 void display_toggleFruits(Fruit fruits[], bool on){
   for(uint8_t i = 0; NUM_OF_FRUITS > i; i++){
-    Fruit* fruit = &fruits[i];
-    uint16_t mask = (1 << (uint16_t)fruit->state);
+    Fruit fruit = fruits[i];
+    uint16_t mask = (1 << (uint16_t)fruit.state);
     if(on){
-        lowerCharSegments[fruit->pos].raw |= mask;
+        lowerCharSegments[fruit.pos].raw |= mask;
     }
     else{
-        lowerCharSegments[fruit->pos].raw &= ~mask;
+        lowerCharSegments[fruit.pos].raw &= ~mask;
     }
   }
   SegmentLCD_LowerSegments(lowerCharSegments);
