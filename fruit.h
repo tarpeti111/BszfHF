@@ -2,7 +2,8 @@
  * fruit.h
  *
  *  Created on: Nov 15, 2025
- *      Author: tarpe
+ *      Authors: tarpe JK42GI,
+ *              pappistvan QNMGJE
  */
 #ifndef FRUIT_H_
 #define FRUIT_H_

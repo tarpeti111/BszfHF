@@ -2,7 +2,8 @@
  * display.c
  *
  *  Created on: Nov 16, 2025
- *      Author: tarpe
+ *      Authors: tarpe JK42GI,
+ *              pappistvan QNMGJE
  */
 #include "display.h"
 #include "segmentlcd_individual.h"
