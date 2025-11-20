@@ -53,6 +53,10 @@ void horizontalSegment_uartInit(){
 }
 
 
+
+/**
+    * @brief interrupt handler of UART's rx buferr
+ */
 void UART0_RX_IRQHandler(void) {
 
 
@@ -87,7 +91,9 @@ void processCommand(void);
 
 
 
-
+/**
+ * @brief struct for callback func and its description that is associated in @see void processCommand()
+ */
 typedef struct {
   char description; //direction of movement
   HorizontalMove func; //callback func to implemented movement
@@ -101,6 +107,11 @@ typedef struct {
   void decreaseSpeed(void);
   void increaseSpeed(void);
 
+
+  /**
+   * @brief instance of @see CommandMove type w discription of player position (that is input) ' s command and corresponding func
+   * @details cases when game has started
+   */
  CommandMove commandTable[] = {
 
      {'b',go_left },
@@ -110,6 +121,10 @@ typedef struct {
  } ;
 
 
+ /**
+   * @brief instance of @see CommandMove type w discription of speed (that is input) command and corresponding func
+   * @details case : when game is not started yet
+   */
  CommandMove commandTableInitial[] = {
 
      {'-', decreaseSpeed},
@@ -117,7 +132,10 @@ typedef struct {
 
  };
 
-     //input of func is input var
+ /** @brief iterating over instanse of Commandmove (case:game is started) and calling callback func for its corresponding discripton (input)
+    * @param[in] void
+    * @return void
+    */
  void processCommand() {
    for(uint8_t i=0; i<CMD_COUNT; i++){
        if(input==commandTable[i].description)
@@ -127,7 +145,10 @@ typedef struct {
 
 
 
-
+ /** @brief iterating over instanse of Commandmove (case:game is not started) and calling callback func for its corresponding discripton (input)
+    * @param[in] void
+    * @return void
+    */
  void processCommandInitial(void) {
    for(uint8_t i=0; i<CMD_COUNT; i++){
        if(input==commandTableInitial[i].description)
@@ -143,14 +164,28 @@ typedef struct {
 
 
 
-
- void go_right(void) {
+ /**
+  * @brief increasing player's position for right direction @see void game_increasePlayerPosition(void)
+  *@details toogling horizontal segment: -incremented pos is on by@see void display_togglePlayerPostition(uint8_t player_pos, bool on)
+  *                                       -current pos is off
+  * @param[in] void
+  * @return void
+  */
+   void go_right(void) {
    display_togglePlayerPostition(game_getPlayerPosition(), false);
    game_increasePlayerPosition();
    display_togglePlayerPostition(game_getPlayerPosition(), true);
  }
 
 
+
+   /**
+     * @brief decreasing  player's position for right direction @see void game_decreasePlayerPosition()(void)
+     *@details toogling horizontal segment: -decremented pos is on by@see void display_togglePlayerPostition(uint8_t player_pos, bool on)
+     *                                       -current pos is off
+     * @param[in] void
+     * @return void
+     */
  void go_left(void) {
    display_togglePlayerPostition(game_getPlayerPosition(), false);
    game_decreasePlayerPosition();
@@ -158,19 +193,32 @@ typedef struct {
  }
 
 
+
+ /**
+      * @brief absraction over @see game_increaseSpeed()
+      * @param[in] void
+      * @return void
+      */
  void increaseSpeed(void) {
      game_increaseSpeed();
  }
 
 
+ /**
+       * @brief absraction over @see game_decreaseSpeed();
+       * @param[in] void
+       * @return void
+       */
  void decreaseSpeed(void){
      game_decreaseSpeed();
  }
 
 
-//overwriting build_in write for formatting string
- //it s polling
- int _write(int file, char *ptr, int len)
+/**
+ * @brief overwriting build_in write for formatting string
+ *  it s polling
+*/
+int _write(int file, char *ptr, int len)
  {
      (void)file; //ingoring file discriptor for notwarning
 
