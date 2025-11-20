@@ -34,18 +34,12 @@ void display_togglePlayerPostition(uint8_t player_pos, bool on){
 void display_toggleFruits(Fruit fruits[], bool on){
   for(uint8_t i = 0; NUM_OF_FRUITS > i; i++){
     Fruit* fruit = &fruits[i];
-    switch (fruit->state){
-      case STARTING:
-        lowerCharSegments[fruit->pos].a = on;
-        break;
-      case FALLING_UPPER:
-        lowerCharSegments[fruit->pos].j = on;
-        break;
-      case FALLING_LOWER:
-        lowerCharSegments[fruit->pos].p = on;
-        break;
-      default:
-        break;
+    uint16_t mask = (1 << (uint16_t)fruit->state);
+    if(on){
+        lowerCharSegments[fruit->pos].raw |= mask;
+    }
+    else{
+        lowerCharSegments[fruit->pos].raw &= ~mask;
     }
   }
   SegmentLCD_LowerSegments(lowerCharSegments);

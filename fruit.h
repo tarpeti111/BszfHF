@@ -11,10 +11,20 @@
 #include "stdint.h"
 #include "stdbool.h"
 
+#define SEGMENT_LCD_FRUIT_STARTING 0
+#define SEGMENT_LCD_FRUIT_FALLING_UPPER 8
+#define SEGMENT_LCD_FRUIT_FALLING_LOWER 12
+
 //maximum number of fruits
 #define NUM_OF_FRUITS SEGMENT_LCD_NUM_OF_LOWER_CHARS
 
-typedef enum {OFFLINE, STARTING, FALLING_UPPER, FALLING_LOWER, FALLEN} FruitState;
+typedef enum {
+  OFFLINE = 255,
+  STARTING = SEGMENT_LCD_FRUIT_STARTING,
+  FALLING_UPPER = SEGMENT_LCD_FRUIT_FALLING_UPPER,
+  FALLING_LOWER = SEGMENT_LCD_FRUIT_FALLING_LOWER,
+  FALLEN
+} FruitState;
 
 typedef struct {
   FruitState state;
