@@ -9,9 +9,10 @@
 #define RAND_GEN_H_
 
 /**
- * @brief Initializes the ADC for generating entropy/noise.
+ * @brief Initializes the random number generator.
  *
- * Configures ADC0 with default settings and a single conversion channel.
+ * Seeds the standard library `rand()` function using ADC noise.
+ * Sets the `initialized` flag to true.
  */
 void rand_gen_init(void);
 

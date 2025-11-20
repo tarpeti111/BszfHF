@@ -12,6 +12,11 @@
 
 bool initialized = false; /**< Flag indicating if the random generator has been initialized */
 
+/**
+ * @brief Initializes the ADC for generating entropy/noise.
+ *
+ * Configures ADC0 with default settings and a single conversion channel.
+ */
 void adc_init(void) {
   CMU_ClockEnable(cmuClock_ADC0, true);
 
@@ -44,12 +49,6 @@ uint32_t seed_from_adc_noise(void) {
   return s;
 }
 
-/**
- * @brief Initializes the random number generator.
- *
- * Seeds the standard library `rand()` function using ADC noise.
- * Sets the `initialized` flag to true.
- */
 void rand_gen_init(){
   adc_init();
   srand(seed_from_adc_noise());
