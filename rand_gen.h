@@ -2,7 +2,8 @@
  * rand_gen.h
  *
  *  Created on: Nov 17, 2025
- *      Author: tarpe
+ *      Authors: tarpe JK42GI,
+ *              pappistvan QNMGJE
  */
 
 #ifndef RAND_GEN_H_

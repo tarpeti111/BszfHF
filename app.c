@@ -21,7 +21,7 @@
 #include "em_cmu.h"
 #include "horizontalSegment.h"
 
-#define GAME_SPAWN_TIME_MS 3001  /**< Time interval between spawning fruits (ms) */
+#define GAME_SPAWN_TIME_MS 1001  /**< Time interval between spawning fruits (ms) */
 #define GAME_TICK_TIME_MS 1000   /**< Base game logic tick interval (ms) */
 
 volatile uint32_t msTicks = 0;          /**< System millisecond counter */

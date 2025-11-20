@@ -2,7 +2,8 @@
  * horizonalSegment.c
  *
  *  Created on: Nov 12, 2025
- *      Author: pappistvan
+ *      Authors: tarpe JK42GI,
+ *              pappistvan QNMGJE
  */
 
 

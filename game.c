@@ -2,7 +2,8 @@
  * game.c
  *
  *  Created on: Nov 15, 2025
- *      Author: tarpe
+ *      Authors: tarpe JK42GI,
+ *              pappistvan QNMGJE
  */
 #include "fruit.h"
 #include "segmentlcd_individual.h"

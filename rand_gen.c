@@ -2,7 +2,8 @@
  * rand_gen.c
  *
  *  Created on: Nov 17, 2025
- *      Author: tarpe
+ *      Authors: tarpe JK42GI,
+ *              pappistvan QNMGJE
  */
 
 #include <stdlib.h>

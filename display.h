@@ -2,7 +2,8 @@
  * display.h
  *
  *  Created on: Nov 16, 2025
- *      Author: tarpe
+ *      Authors: tarpe JK42GI,
+ *              pappistvan QNMGJE
  */
 
 #ifndef DISPLAY_H_

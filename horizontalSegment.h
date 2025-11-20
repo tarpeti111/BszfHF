@@ -2,7 +2,8 @@
  * horizontalSegment.h
  *
  *  Created on: Nov 16, 2025
- *      Author: pappistvan
+ *      Authors: tarpe JK42GI,
+ *              pappistvan QNMGJE
  */
 
 #ifndef HORIZONTALSEGMENT_H_
