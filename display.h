@@ -13,8 +13,8 @@
 
 void display_init(void);
 
-void display_updatePlayerPostition(uint8_t player_pos);
-void display_updateFruits(Fruit* fruits);
+void display_togglePlayerPostition(uint8_t player_pos, bool on);
+void display_toggleFruits(Fruit* fruits, bool on);
 void display_updateScore(uint8_t missed, uint8_t caught);
 
 void display_clear(void);

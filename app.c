@@ -19,7 +19,7 @@
 #include "game.h"
 #include "em_usart.h"
 #include "em_cmu.h"
-#include "uart.h"
+#include "horizontalSegment.h"
 
 volatile uint32_t msTicks = 0;
 
@@ -40,15 +40,15 @@ void SysTick_Handler(void){
 void app_init(void)
 {
   // Enable clock for GPIO
-  CMU->HFPERCLKEN0 |= CMU_HFPERCLKEN0_GPIO;
+  CMU_ClockEnable(cmuClock_GPIO, true);
 
   game_init();
+  horizontalSegment_uartInit();
 
-  msTicks = 0;
   timerGameAction = 1000;
-  timerSpawn = 1500;
+  timerSpawn = 3001;
 
-  /* Setup SysTick Timer for 1 msec interrupts  */
+  /* Setup SysTick Timer for 1 millisecond interrupts  */
   if (SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE)/1000)) {
     while (1) ;
   }
@@ -60,17 +60,12 @@ void app_init(void)
  ******************************************************************************/
 void app_process_action(void)
 {
-  char ch;
-  ch = USART_RxNonblocking(UART0);
-  if (ch != 0) {
-      game_handleInput(ch);
-  }
   if(timerGameAction == 0){
       game_action();
       timerGameAction = 1000 / game_getFallingSpeed();
   }
   if(timerSpawn == 0){
       game_spawnFruit();
-      timerSpawn = 3333;
+      timerSpawn = 3001;
   }
 }

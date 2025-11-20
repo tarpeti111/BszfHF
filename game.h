@@ -10,9 +10,17 @@
 
 void game_init(void);
 void game_start(void);
-uint8_t game_getFallingSpeed();
 void game_spawnFruit(void);
 void game_action(void);
-void game_handleInput(char c);
+
+bool game_getStarted(void);
+
+uint8_t game_getPlayerPosition(void);
+void game_increasePlayerPosition(void);
+void game_decreasePlayerPosition(void);
+
+uint8_t game_getFallingSpeed(void);
+void game_increaseFallingSpeed(void);
+void game_decreaseFallingSpeed(void);
 
 #endif /* GAME_H_ */
