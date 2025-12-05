@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define GAME_END_STRING "<END>" /**< String for higher level application to tell that the game has ended*/
+
 /**
  * @brief Initializes the game state.
  *

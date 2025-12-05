@@ -233,3 +233,11 @@ int _write(int file, char *ptr, int len)
 
      return len; //not relevant
  }
+
+void horizontalSegment_uartFlush() {
+    while (!(UART0->STATUS & USART_STATUS_TXC));
+}
+
+void horizontalSegment_TxScore() {
+    printf(GAME_END_STRING "Score: %d\r\n", game_getScore());
+}

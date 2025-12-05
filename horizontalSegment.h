@@ -10,5 +10,7 @@
 #define HORIZONTALSEGMENT_H_
 
 void horizontalSegment_uartInit(void);
+void horizontalSegment_TxScore(void);
+void horizontalSegment_uartFlush(void);
 
 #endif /* HORIZONTALSEGMENT_H_ */

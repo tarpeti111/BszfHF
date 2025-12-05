@@ -56,6 +56,8 @@ void game_over(void){
   game.started = false;
   display_clear();
   display_updateScore(game.missed, game.caught);
+  horizontalSegment_uartFlush();
+  horizontalSegment_TxScore();
 }
 
 void game_spawnFruit(void){
@@ -126,4 +128,8 @@ void game_increaseSpeed(){
 
 void game_decreaseSpeed(){
   game.falling_speed = (game.falling_speed <= FALLING_SPEED_MIN) ? FALLING_SPEED_MIN : game.falling_speed - 1;
+}
+
+uint16_t game_getScore(){
+  return game.falling_speed * game.caught;
 }
