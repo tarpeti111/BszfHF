@@ -49,6 +49,9 @@ void game_start(void){
   game.started = true;
   game.missed = 0;
   game.caught = 0;
+
+  horizontalSegment_TxPlayingTag();   // send <PLA> right at start
+
   display_togglePlayerPostition(game.player_pos, true);
 }
 

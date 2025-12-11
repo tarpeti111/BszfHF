@@ -12,5 +12,6 @@
 void horizontalSegment_uartInit(void);
 void horizontalSegment_TxScore(void);
 void horizontalSegment_uartFlush(void);
+void horizontalSegment_TxPlayingTag(void);
 
 #endif /* HORIZONTALSEGMENT_H_ */

@@ -12,7 +12,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define GAME_END_STRING "<END>" /**< String for higher level application to tell that the game has ended*/
+#define GAME_END_TAG "<END>" /**< String for higher level application to tell that the game has ended*/
+#define GAME_PLAYING_TAG "<PLA>" /**< String for higher level application to tell that the game is ongoing*/
 
 /**
  * @brief Initializes the game state.
@@ -93,5 +94,11 @@ void game_increaseFallingSpeed(void);
  * Caps at the defined minimum speed.
  */
 void game_decreaseFallingSpeed(void);
+/**
+ * @brief Returns the score.
+ *
+ * @return Score, calculated as falling_speed * caught fruits
+ */
+uint16_t game_getScore(void);
 
 #endif /* GAME_H_ */

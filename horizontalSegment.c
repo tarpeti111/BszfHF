@@ -239,5 +239,10 @@ void horizontalSegment_uartFlush() {
 }
 
 void horizontalSegment_TxScore() {
-    printf(GAME_END_STRING "Score: %d\r\n", game_getScore());
+    printf(GAME_END_TAG "Score: %d\r\n", game_getScore());
+}
+
+void horizontalSegment_TxPlayingTag(void) {
+    printf(GAME_PLAYING_TAG "\r\n");
+    horizontalSegment_uartFlush();
 }
